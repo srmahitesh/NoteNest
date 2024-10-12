@@ -305,9 +305,13 @@ import session from "express-session";
 import passport from "passport";
 import Strategy from "passport-local";
 
+
+
 const App = express();
 const PORT = process.env.PORT || 3000;
 const saltRounds = await bcrypt.genSalt(10);
+
+
 
 App.use(session({
 	secret: "HS",
@@ -318,10 +322,19 @@ App.use(session({
 	}
 }));
 
+
+
+
 App.use(passport.initialize());
 App.use(passport.session());
 
+
+
+
 App.use(bodyParser.urlencoded({ extended: false }));
+
+
+
 
 // Create a promise-based connection
 const con = await mysql.createConnection({
@@ -331,7 +344,14 @@ const con = await mysql.createConnection({
 	database: "mydatabase"
 });
 
+
+
+
 console.log(`Connection Established!`);
+
+
+
+
 
 App.get("/secrets", async (req, res) => {
 	if (req.isAuthenticated()) {
@@ -349,6 +369,9 @@ App.get("/secrets", async (req, res) => {
 	}
 });
 
+
+
+
 App.post("/addnote", async (req, res) => {
 	if (req.isAuthenticated()) {
 		const userNote = req.body.note;
@@ -365,9 +388,14 @@ App.post("/addnote", async (req, res) => {
 	}
 });
 
+
+
+
 App.post("/signin", passport.authenticate('local', { failureRedirect: '/oldUser' }), (req, res) => {
 	res.redirect('/secrets');
 });
+
+
 
 App.post("/signup", async (req, res) => {
 	let userEmail = req.body.email.toLowerCase().trim();
@@ -388,13 +416,19 @@ App.post("/signup", async (req, res) => {
 	}
 });
 
+
+
 App.get("/newUser", (req, res) => {
 	res.render("signup.ejs");
 });
 
+
+
 App.get("/oldUser", (req, res) => {
 	res.render("signin.ejs");
 });
+
+
 
 passport.use(new Strategy(async (username, password, cb) => {
 	const inputEmail = username.toLowerCase().trim();
@@ -419,17 +453,25 @@ passport.use(new Strategy(async (username, password, cb) => {
 	}
 }));
 
+
+
 passport.serializeUser((user, cb) => {
 	cb(null, user);
 });
+
+
 
 passport.deserializeUser((user, cb) => {
 	cb(null, user);
 });
 
+
+
 App.listen(PORT, () => {
 	console.log(`App is running on PORT ${PORT}`);
 });
+
+
 
 async function checkDuplicateUser(email, number) {
 	let result1, result2;
